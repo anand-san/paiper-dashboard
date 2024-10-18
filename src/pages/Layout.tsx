@@ -1,6 +1,11 @@
-import { SidebarWrapper } from "@/components/Sidebar";
-import { ReactNode } from "react";
+import { Sidebar } from "@/components/Sidebar";
+import Dashboard from "./Dashboard";
 
-export default function Layout({ children }: { children: ReactNode }) {
-  return <SidebarWrapper>{children}</SidebarWrapper>;
+export default function Layout() {
+  return (
+    <main className="min-h-screen w-full flex">
+      <Sidebar />
+      <Dashboard />
+    </main>
+  );
 }

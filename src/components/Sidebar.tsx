@@ -1,132 +1,175 @@
-"use client";
-import { ReactNode, useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar/sidebar";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import {
-  IconBrandTabler,
-  IconSettings,
-  IconFile3d,
-  IconUserBolt,
-} from "@tabler/icons-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Link, useNavigate } from "react-router-dom";
-import { LogOutIcon } from "lucide-react";
-import { auth } from "@/firebase";
+  ChevronLeft,
+  ChevronRight,
+  Home,
+  Settings,
+  User,
+  Menu,
+} from "lucide-react";
 import { ThemeToggle } from "./ToggleTheme";
-import { Button } from "./ui/button";
 
-export function SidebarWrapper({ children }: { children: ReactNode }) {
-  const links = [
-    {
-      label: "Insights",
-      href: "#",
-      icon: (
-        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Files",
-      href: "#",
-      icon: (
-        <IconFile3d className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Settings",
-      href: "#",
-      icon: (
-        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Profile",
-      href: "#",
-      icon: (
-        <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-  ];
-  const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
+// Custom hook to handle mobile check and window resize event
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
 
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigate("/login");
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
+  return isMobile;
+};
+
+interface SidebarContentProps {
+  isOpen: boolean;
+  isMobile: boolean;
+  toggleSidebar: () => void;
+}
+
+const SidebarToggleButton = ({
+  isOpen,
+  toggleSidebar,
+  isMobile,
+}: SidebarContentProps) => (
+  <Button
+    variant="ghost"
+    size="icon"
+    className={isMobile ? "fixed top-4 left-4 z-20" : ""}
+    onClick={toggleSidebar}
+  >
+    {isMobile ? <Menu /> : isOpen ? <ChevronLeft /> : <ChevronRight />}
+  </Button>
+);
+
+const SidebarContent = ({
+  isOpen,
+  isMobile,
+  toggleSidebar,
+}: SidebarContentProps) => {
+  const sidebarVariants = {
+    open: {
+      width: isMobile ? "100%" : "16rem",
+      x: 0,
+      // transition: { type: "spring", stiffness: 100 },
+    },
+    closed: {
+      width: isMobile ? "0" : "4rem",
+      x: isMobile ? "-100%" : 0,
+      // transition: { type: "spring", stiffness: 100 },
+    },
+  };
+
+  const textVariants = {
+    open: {
+      opacity: 1,
+      x: 0,
+      display: "inline-block",
+      // transition: { delay: 0.2 },
+    },
+    closed: {
+      opacity: 0,
+      x: -20,
+      display: "none",
+      // transition: { display: { delay: 0.2 } },
+    },
   };
 
   return (
-    <div
-      className={cn(
-        "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 max-w-7xl mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
-        "h-screen"
-      )}
+    <motion.div
+      className={`${
+        isMobile ? "fixed inset-y-0 left-0 z-30 w-full" : "h-screen"
+      } bg-gray-800 text-white`}
+      initial={isMobile ? "closed" : "open"}
+      animate={isOpen ? "open" : "closed"}
+      exit="closed"
+      variants={sidebarVariants}
     >
-      <Sidebar open={open} setOpen={setOpen} animate={true}>
-        <SidebarBody className="justify-between gap-10">
-          <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            <>
-              <Logo />
-            </>
-            <div className="mt-8 flex flex-col gap-2">
-              {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} />
-              ))}
-            </div>
-          </div>
+      <div className="flex justify-end p-4">
+        <SidebarToggleButton
+          isOpen={isOpen}
+          toggleSidebar={toggleSidebar}
+          isMobile={isMobile}
+        />
+      </div>
+      <nav className="mt-8 ">
+        <ul className="space-y-4">
           <div>
-            <div className={open ? "space-x-2" : "space-y-2"}>
-              <ThemeToggle />
-              <Button variant="outline" size="icon" onClick={handleLogout}>
-                <LogOutIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-              </Button>
-            </div>
+            {["Home", "Profile", "Settings"].map((item, index) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  className="flex items-center px-4 py-2 hover:bg-gray-700"
+                >
+                  {index === 0 && <Home className="h-6 w-6 flex-shrink-0" />}
+                  {index === 1 && <User className="h-6 w-6 flex-shrink-0" />}
+                  {index === 2 && (
+                    <Settings className="h-6 w-6 flex-shrink-0" />
+                  )}
+                  <motion.span
+                    className={`ml-3 ${isMobile ? "text-xl" : ""}`}
+                    variants={isMobile ? {} : textVariants}
+                    initial={isMobile ? { opacity: 1, x: 0 } : "closed"}
+                    animate={isOpen || isMobile ? "open" : "closed"}
+                  >
+                    {item}
+                  </motion.span>
+                </a>
+              </li>
+            ))}
           </div>
-        </SidebarBody>
-      </Sidebar>
-      {children}
-    </div>
-  );
-}
-export const Logo = () => {
-  return (
-    <Link
-      to="#"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
-    >
-      <img
-        src="logo-small.png"
-        alt="Logo"
-        className="text-2xl font-bold"
-        width={60}
-        height={40}
-      />
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
-      >
-        Paiperless
-      </motion.span>
-    </Link>
+          <li>
+            <ThemeToggle />
+          </li>
+        </ul>
+      </nav>
+    </motion.div>
   );
 };
-export const LogoIcon = () => {
+
+const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <Link
-      to="#"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
-    >
-      <img
-        src="src/assets/logo.png"
-        alt="Logo"
-        className="text-2xl font-bold"
-        width={120}
-        height={40}
-      />
-    </Link>
+    <>
+      {isMobile && (
+        <SidebarToggleButton
+          isOpen={isOpen}
+          toggleSidebar={toggleSidebar}
+          isMobile={isMobile}
+        />
+      )}
+      <AnimatePresence>
+        {(isOpen || !isMobile) && (
+          <SidebarContent
+            isOpen={isOpen}
+            isMobile={isMobile}
+            toggleSidebar={toggleSidebar}
+          />
+        )}
+      </AnimatePresence>
+      {isMobile && isOpen && (
+        <motion.div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={toggleSidebar}
+        />
+      )}
+    </>
   );
 };
+
+export { Sidebar };

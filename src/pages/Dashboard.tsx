@@ -1,26 +1,26 @@
-import React, { useState } from "react";
-import Layout from "./Layout";
+import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { FileUpload } from "@/components/ui/file-upload";
+import { useFileUpload } from "@/api/useFileUpload";
 
 const Dashboard: React.FC = () => {
-  const [, setFiles] = useState<File[]>([]);
+  const fileUpload = useFileUpload();
 
   const { user } = useAuth();
   const handleFileUpload = (files: File[]) => {
-    setFiles(files);
+    if (files.length) {
+      fileUpload.mutate(files);
+    }
     console.log(files);
   };
 
   return (
-    <Layout>
-      <main className="h-screen w-full flex justify-center">
-        Hello {user?.email}
-        <div className="flex items-center mx-auto border border-dashed border-neutral-200 dark:border-neutral-800 rounded-lg">
-          <FileUpload onChange={handleFileUpload} />
-        </div>
-      </main>
-    </Layout>
+    <main className="flex justify-center">
+      Hello {user?.email}
+      <div className="flex items-center mx-auto border border-dashed border-neutral-200 dark:border-neutral-800 rounded-lg">
+        <FileUpload onChange={handleFileUpload} />
+      </div>
+    </main>
   );
 };
 
