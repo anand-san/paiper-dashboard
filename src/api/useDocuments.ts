@@ -1,20 +1,14 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-
-// API endpoint - should be moved to an environment variable in production
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
-
-const SUB_API_ENDPOINTS = {
-  DOCUMENT: "documents",
-};
+import { API_ENDPOINT, SUB_API_ENDPOINTS } from "./constants";
 
 interface UploadResponse {
   message: string;
   fileUrl: string;
 }
 
-export const useFileUpload = () => {
+export const useCreateDocument = () => {
   const toast = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -68,6 +62,39 @@ export const useFileUpload = () => {
         description: `Failed to upload file. Please try again. ${error.message}`,
         variant: "destructive",
       });
+    },
+  });
+};
+
+export const useGetDocuments = () => {
+  const { user } = useAuth();
+  return useQuery<UploadResponse[], Error>({
+    queryKey: ["userFiles"],
+    queryFn: async () => {
+      if (!user) {
+        throw new Error("User is not authenticated");
+      }
+
+      const token = await user.getIdToken();
+      if (!token) {
+        throw new Error("No authentication token available");
+      }
+
+      const response = await fetch(
+        `${API_ENDPOINT}/${SUB_API_ENDPOINTS.DOCUMENT}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch documents");
+      }
+
+      return response.json();
     },
   });
 };

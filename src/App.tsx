@@ -4,7 +4,6 @@ import {
   Route,
   Routes,
   Navigate,
-  Outlet,
 } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";

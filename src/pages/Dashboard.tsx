@@ -1,15 +1,15 @@
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { FileUpload } from "@/components/ui/file-upload";
-import { useFileUpload } from "@/api/useFileUpload";
+import { useCreateDocument } from "@/api/useDocuments";
 
 const Dashboard: React.FC = () => {
-  const fileUpload = useFileUpload();
+  const addDocument = useCreateDocument();
 
   const { user } = useAuth();
   const handleFileUpload = (files: File[]) => {
     if (files.length) {
-      fileUpload.mutate(files);
+      addDocument.mutate(files);
     }
     console.log(files);
   };
