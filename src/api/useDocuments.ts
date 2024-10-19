@@ -3,9 +3,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { API_ENDPOINT, SUB_API_ENDPOINTS } from "./constants";
 
-interface UploadResponse {
-  message: string;
-  fileUrl: string;
+interface DocumentData {
+  fileType: string;
+  url: string;
+  id: string;
+  name: string;
+  uploadedAt: string;
+  ocrData: string;
+}
+
+interface DocumentResponse {
+  id: string;
+  message: DocumentData[];
 }
 
 export const useCreateDocument = () => {
@@ -13,7 +22,7 @@ export const useCreateDocument = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  return useMutation<UploadResponse, Error, File[]>({
+  return useMutation<DocumentResponse, Error, File[]>({
     mutationFn: async (file: File[]) => {
       if (!user) {
         throw new Error("User is not authenticated");
@@ -53,7 +62,7 @@ export const useCreateDocument = () => {
     },
     onSuccess: (data) => {
       toast.toast({
-        description: data.message,
+        description: data.id,
       });
       queryClient.invalidateQueries({ queryKey: ["userFiles"] });
     },
@@ -68,7 +77,7 @@ export const useCreateDocument = () => {
 
 export const useGetDocuments = () => {
   const { user } = useAuth();
-  return useQuery<UploadResponse[], Error>({
+  return useQuery<DocumentResponse, Error>({
     queryKey: ["userFiles"],
     queryFn: async () => {
       if (!user) {
