@@ -1,11 +1,17 @@
-import { Sidebar } from "@/components/Sidebar";
-import Dashboard from "./Dashboard";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Outlet } from "react-router-dom";
 
 export default function Layout() {
   return (
     <main className="min-h-screen w-full flex">
-      <Sidebar />
-      <Dashboard />
+      <SidebarProvider>
+        <AppSidebar />
+        <main>
+          <SidebarTrigger />
+          <Outlet />
+        </main>
+      </SidebarProvider>
     </main>
   );
 }

@@ -5,9 +5,9 @@ import { useToast } from "@/hooks/use-toast";
 // API endpoint - should be moved to an environment variable in production
 const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
-// const ENDPOINTS = {
-//   DOCUMENT: "/document",
-// };
+const SUB_API_ENDPOINTS = {
+  DOCUMENT: "documents",
+};
 
 interface UploadResponse {
   message: string;
@@ -34,13 +34,16 @@ export const useFileUpload = () => {
       formData.append("file", file[0]);
 
       try {
-        const response = await fetch(API_ENDPOINT, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        });
+        const response = await fetch(
+          `${API_ENDPOINT}/${SUB_API_ENDPOINTS.DOCUMENT}`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to upload file");
