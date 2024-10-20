@@ -1,22 +1,37 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const Signup: React.FC = () => {
+  const { user, loading: loadingUserData } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       navigate("/dashboard");
-    } catch (error) {
-      console.error("Error signing up:", error);
+    } catch {
+      toast.toast({
+        description: `Error signing up. Please try again`,
+        variant: "destructive",
+      });
     }
   };
+
+  if (loadingUserData) {
+    return "loading";
+  }
+
+  if (user) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">

@@ -6,33 +6,44 @@ import {
   signInWithEmailAndPassword,
   AuthError,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Login() {
+  const { user, loading: loadingUserData } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const { toast } = useToast();
   const handleAuthError = (error: AuthError) => {
     setLoading(false);
     switch (error.code) {
       case "auth/user-not-found":
       case "auth/wrong-password":
-        setError("Invalid email or password");
+      case "auth/invalid-email":
+        toast({
+          description: "Invalid email or password",
+          variant: "destructive",
+        });
         break;
       case "auth/too-many-requests":
-        setError("Too many login attempts. Please try again later.");
+        toast({
+          description: "Too many login attempts. Please try again later.",
+          variant: "destructive",
+        });
         break;
       default:
-        setError("An error occurred. Please try again.");
+        toast({
+          description: "An error occurred. Please try again.",
+          variant: "destructive",
+        });
     }
   };
 
   const handleSuccessfulAuth = () => {
     setLoading(false);
-    setError(null);
     navigate("/"); // Redirect to dashboard after successful login
   };
 
@@ -41,7 +52,6 @@ export default function Login() {
   ) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     const email = (
       e.currentTarget.elements.namedItem("email") as HTMLInputElement
@@ -54,13 +64,13 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email, password);
       handleSuccessfulAuth();
     } catch (error) {
+      console.log({ error });
       handleAuthError(error as AuthError);
     }
   };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    setError(null);
 
     const provider = new GoogleAuthProvider();
     try {
@@ -71,19 +81,18 @@ export default function Login() {
     }
   };
 
+  if (loadingUserData) {
+    return "loading";
+  }
+
+  if (user) {
+    return <Navigate to={"/"} />;
+  }
+
   return (
     <div className="mx-auto flex w-full flex-col justify-center px-5 pt-0 md:h-[unset] md:max-w-[50%] lg:h-[100vh] min-h-[100vh] lg:max-w-[50%] lg:px-6">
       <div className="my-auto mb-auto flex flex-col md:mt-[70px] w-[350px] max-w-[450px] mx-auto md:max-w-[450px] lg:mt-[130px] lg:max-w-[450px]">
         <h1 className="text-[32px] font-bold ">Sign In</h1>
-
-        {error && (
-          <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-            role="alert"
-          >
-            <span className="block sm:inline">{error}</span>
-          </div>
-        )}
 
         <p className="mb-2.5 mt-2.5 font-normal text-zinc-700 dark:text-zinc-300">
           Enter your email and password to sign in!
