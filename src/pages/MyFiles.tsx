@@ -1,6 +1,6 @@
 import { useGetDocuments } from "@/api/useDocuments";
 import { ExpandableCards } from "@/components/ExpandableCards";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs/tabs";
 
 export default function MyFiles() {
   const { isPending, isError, data, error } = useGetDocuments();
@@ -8,7 +8,6 @@ export default function MyFiles() {
   if (isPending) return <div>Loading...</div>;
 
   if (isError) return <div>Error: {error.message}</div>;
-  console.log({ data: data.message });
   const mapApiResponseToCards = () => {
     return data.message.map((item) => ({
       id: item.id,
@@ -35,7 +34,7 @@ export default function MyFiles() {
       title: "Everything",
       value: "everything",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-stone-700 to-stone-800">
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-2 md:p-4 text-xl md:text-4xl font-bold bg-gradient-to-br from-stone-100 to-stone-200">
           <ExpandableCards cards={mapApiResponseToCards()} />
         </div>
       ),
@@ -44,7 +43,7 @@ export default function MyFiles() {
       title: "Bills",
       value: "bills",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-stone-700 to-stone-800">
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold  bg-gradient-to-br from-stone-100 to-stone-200">
           <p>Bills</p>
         </div>
       ),
@@ -53,7 +52,7 @@ export default function MyFiles() {
       title: "Tax",
       value: "Tax",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-stone-700 to-stone-800">
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold  bg-gradient-to-br from-stone-100 to-stone-200">
           <p>Tax</p>
         </div>
       ),
@@ -62,7 +61,7 @@ export default function MyFiles() {
       title: "Healthcare",
       value: "healthcare",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-stone-700 to-stone-800">
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold  bg-gradient-to-br from-stone-100 to-stone-200">
           <p>Healthcare</p>
         </div>
       ),
@@ -71,7 +70,7 @@ export default function MyFiles() {
       title: "Contracts",
       value: "contracts",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-stone-700 to-stone-800">
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold  bg-gradient-to-br from-stone-100 to-stone-200">
           <p>Contracts</p>
         </div>
       ),
@@ -80,7 +79,7 @@ export default function MyFiles() {
       title: "test1",
       value: "test1",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-stone-700 to-stone-800">
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold  bg-gradient-to-br from-stone-100 to-stone-200">
           <p>test1</p>
         </div>
       ),
@@ -89,7 +88,7 @@ export default function MyFiles() {
       title: "test2",
       value: "test2",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-stone-700 to-stone-800">
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold  bg-gradient-to-br from-stone-100 to-stone-200">
           <p>test2</p>
         </div>
       ),

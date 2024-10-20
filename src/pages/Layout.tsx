@@ -7,7 +7,7 @@ export default function Layout() {
     <main className="min-h-screen w-full flex">
       <SidebarProvider>
         <AppSidebar />
-        <main className="w-full h-full md:mx-4">
+        <main className="w-full h-full mx-2 md:mx-4">
           <SidebarTrigger />
           <Outlet />
         </main>

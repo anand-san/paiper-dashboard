@@ -64,7 +64,6 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email, password);
       handleSuccessfulAuth();
     } catch (error) {
-      console.log({ error });
       handleAuthError(error as AuthError);
     }
   };

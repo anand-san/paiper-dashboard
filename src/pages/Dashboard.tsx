@@ -11,7 +11,6 @@ const Dashboard: React.FC = () => {
     if (files.length) {
       addDocument.mutate(files);
     }
-    console.log(files);
   };
 
   return (
