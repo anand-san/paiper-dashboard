@@ -1,7 +1,17 @@
+import { auth } from "@/firebase";
 import { useAuth } from "@/hooks/useAuth";
+import { signOut } from "firebase/auth";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -38,6 +48,12 @@ const UserProfile = () => {
               {user.metadata.lastSignInTime ?? "N/A"}
             </span>
           </div>
+          <button
+            onClick={handleLogout}
+            className="mt-6 bg-red-500 text-white py-2 px-4 rounded"
+          >
+            Logout
+          </button>
         </div>
       </div>
     )
