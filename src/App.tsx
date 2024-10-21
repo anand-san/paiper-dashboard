@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -19,9 +19,11 @@ const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  if (!user) {
-    navigate("/login");
-  }
+  useEffect(() => {
+    if (!user && !loading) {
+      navigate("/login");
+    }
+  }, [user, navigate, loading]);
 
   if (loading) {
     return <div>Loading...</div>;
