@@ -1,15 +1,59 @@
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function Layout() {
+  const location = useLocation();
+  const currentRoute = location.pathname;
+
   return (
-    <main className="min-h-screen w-full flex">
+    <main className="min-h-screen w-full flex container">
       <SidebarProvider>
         <AppSidebar />
-        <main className="w-full h-full mx-2 md:mx-4">
-          <SidebarTrigger />
-          <Outlet />
+        <main className="w-full h-full m-2 md:m-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <SidebarTrigger />
+              </BreadcrumbItem>
+              <BreadcrumbItem>
+                <Link to="/">Home</Link>
+              </BreadcrumbItem>
+              {currentRoute === "/files" && (
+                <>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <Link to="/files">My Files</Link>
+                  </BreadcrumbItem>
+                </>
+              )}
+              {currentRoute === "/profile" && (
+                <>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <Link to="/profile">Profile</Link>
+                  </BreadcrumbItem>
+                </>
+              )}
+              {currentRoute === "/settings" && (
+                <>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <Link to="/settings">Settings</Link>
+                  </BreadcrumbItem>
+                </>
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
+          <div className="w-full h-full m-2 md:m-2">
+            <Outlet />
+          </div>
         </main>
       </SidebarProvider>
     </main>
