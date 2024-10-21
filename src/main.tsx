@@ -12,7 +12,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider defaultTheme="light" storageKey="paiperless-ui-theme">
+        <ThemeProvider defaultTheme="light" storageKey="paiper-ui-theme">
           <App />
           <Toaster />
         </ThemeProvider>
