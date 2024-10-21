@@ -65,9 +65,9 @@ export const useCreateDocument = () => {
         });
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.toast({
-        description: data.id,
+        description: "File Uploaded",
       });
       queryClient.invalidateQueries({ queryKey: ["userFiles"] });
     },
