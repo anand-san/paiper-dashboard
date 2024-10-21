@@ -2,12 +2,15 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 
 export interface ICards {
-  description: string;
+  subCategory: string;
+  fileType: string;
+  url: string;
   id: string;
-  title: string;
-  src: string;
-  ctaText: string;
-  ctaLink: string;
+  name: string;
+  uploadedAt: string;
+  summary: string;
+  year: number;
+  tags: Array<string>;
   content: () => JSX.Element;
 }
 
@@ -32,20 +35,20 @@ export function ExpandableCards({ cards }: { cards: ICards[] }) {
             </div>
             <div>
               <p className="font-light text-xs md:text-lg text-neutral-800 dark:text-neutral-200 text-left">
-                {card.title}
+                {card.name}
               </p>
 
               <p className="font-light text-xs md:text-lg text-neutral-600 dark:text-neutral-400 text-left">
-                {card.description}
+                {card.summary}
               </p>
               <span>
-                <Badge variant="outline">Invoice</Badge>
-                <Badge variant="outline">Tax</Badge>
-                <Badge variant="outline">2024</Badge>
+                {card.tags.map((c) => (
+                  <Badge variant="outline">{c}</Badge>
+                ))}
               </span>
             </div>
           </div>
-          <Button variant={"outline"}>{card.ctaText}</Button>
+          <Button variant={"outline"}>View</Button>
         </div>
       ))}
     </ul>

@@ -4,12 +4,17 @@ import { useToast } from "@/hooks/use-toast";
 import { API_ENDPOINT, SUB_API_ENDPOINTS } from "./constants";
 
 interface DocumentData {
+  category: string;
+  subCategory: string;
   fileType: string;
   url: string;
   id: string;
   name: string;
   uploadedAt: string;
-  ocrData: string;
+  text: string;
+  summary: string;
+  year: number;
+  tags: Array<string>;
 }
 
 interface DocumentResponse {
