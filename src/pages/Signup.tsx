@@ -4,6 +4,7 @@ import { auth } from "../firebase";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import Loader from "@/components/loader/Loader";
 
 const Signup: React.FC = () => {
   const { user, loading: loadingUserData } = useAuth();
@@ -26,7 +27,11 @@ const Signup: React.FC = () => {
   };
 
   if (loadingUserData) {
-    return "loading";
+    return (
+      <div className="h-screen flex">
+        <Loader />
+      </div>
+    );
   }
 
   if (user) {

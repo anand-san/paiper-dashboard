@@ -1,3 +1,4 @@
+import Loader from "@/components/loader/Loader";
 import { auth } from "@/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { signOut } from "firebase/auth";
@@ -14,7 +15,11 @@ const UserProfile = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex">
+        <Loader />
+      </div>
+    );
   }
 
   return (

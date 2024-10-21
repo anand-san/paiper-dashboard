@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import MyFiles from "./pages/MyFiles";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import Loader from "./components/loader/Loader";
 
 const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
@@ -26,7 +27,11 @@ const ProtectedRoute: React.FC = () => {
   }, [user, navigate, loading]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex">
+        <Loader />
+      </div>
+    );
   }
 
   return <Layout />;

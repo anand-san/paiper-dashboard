@@ -1,11 +1,17 @@
 import { useGetDocuments } from "@/api/useDocuments";
 import { FileCards } from "@/components/FileCards";
+import Loader from "@/components/loader/Loader";
 import { Tabs } from "@/components/ui/tabs/tabs";
 
 export default function MyFiles() {
   const { isPending, isError, data, error } = useGetDocuments();
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending)
+    return (
+      <div className="h-screen flex">
+        <Loader />
+      </div>
+    );
 
   if (isError) return <div>Error: {error.message}</div>;
 

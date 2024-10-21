@@ -11,6 +11,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import Loader from "@/components/loader/Loader";
 
 export default function Login() {
   const { user, loading: loadingUserData } = useAuth();
@@ -81,7 +82,11 @@ export default function Login() {
   };
 
   if (loadingUserData) {
-    return "loading";
+    return (
+      <div className="h-screen flex">
+        <Loader />
+      </div>
+    );
   }
 
   if (user) {
