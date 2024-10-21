@@ -1,5 +1,5 @@
 import { useGetDocuments } from "@/api/useDocuments";
-import { ExpandableCards } from "@/components/ExpandableCards";
+import { FileCards } from "@/components/FileCards";
 import { Tabs } from "@/components/ui/tabs/tabs";
 
 export default function MyFiles() {
@@ -45,8 +45,8 @@ export default function MyFiles() {
       title: "Everything",
       value: "everything",
       content: (
-        <div className="w-full overflow-auto relative h-full rounded-2xl p-2 md:p-4 text-xl md:text-4xl font-bold bg-gradient-to-br from-stone-100 to-stone-200">
-          <ExpandableCards cards={mapApiResponseToCards()} />
+        <div className="w-full overflow-auto relative h-full rounded-2xl p-2 md:p-4 text-xl md:text-4xl font-bold bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900">
+          <FileCards cards={mapApiResponseToCards()} />
         </div>
       ),
     },
@@ -60,8 +60,8 @@ export default function MyFiles() {
     title: category,
     value: category,
     content: (
-      <div className="w-full overflow-auto relative h-full rounded-2xl p-2 md:p-4 text-xl md:text-4xl font-bold bg-gradient-to-br from-stone-100 to-stone-200">
-        <ExpandableCards cards={mapApiResponseToCards(category)} />
+      <div className="w-full overflow-auto relative h-full rounded-2xl p-2 md:p-4 text-xl md:text-4xl font-bold bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900">
+        <FileCards cards={mapApiResponseToCards(category)} />
       </div>
     ),
   }));

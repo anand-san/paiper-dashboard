@@ -14,7 +14,7 @@ export interface ICards {
   content: () => JSX.Element;
 }
 
-export function ExpandableCards({ cards }: { cards: ICards[] }) {
+export function FileCards({ cards }: { cards: ICards[] }) {
   return (
     <ul className="mx-auto w-full gap-4">
       {cards.map((card) => (
@@ -30,7 +30,7 @@ export function ExpandableCards({ cards }: { cards: ICards[] }) {
                 // src={card.src}
                 src="image-thumb.svg"
                 alt=""
-                className="h-16 w-12 md:h-20 md:w-16 rounded-lg object-cover object-top"
+                className="h-16 w-12 min-w-12 md:h-20 md:w-16 md:min-w-16 rounded-lg object-cover object-top"
               />
             </div>
             <div>
@@ -38,13 +38,16 @@ export function ExpandableCards({ cards }: { cards: ICards[] }) {
                 {card.name}
               </p>
 
-              <p className="font-light text-xs md:text-lg text-neutral-600 dark:text-neutral-400 text-left">
+              <p className="font-light text-xs md:text-sm text-neutral-600 dark:text-neutral-400 text-left">
                 {card.summary}
               </p>
-              <span>
+              <span className="space-x-2">
                 {card.tags.map((c) => (
-                  <Badge variant="outline">{c}</Badge>
+                  <Badge key={c} variant="secondary">
+                    {c}
+                  </Badge>
                 ))}
+                {card.year && <Badge variant="secondary">{card.year}</Badge>}
               </span>
             </div>
           </div>
