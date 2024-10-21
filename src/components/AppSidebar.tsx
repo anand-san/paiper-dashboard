@@ -29,6 +29,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
+import { ThemeToggle } from "./ToggleTheme";
 
 // Menu items.
 const items = [
@@ -73,6 +74,7 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
+            <ThemeToggle />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
