@@ -155,7 +155,9 @@ export const useProcessDriveFiles = () => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["listDriveFiles"] });
+      queryClient.invalidateQueries({
+        queryKey: ["userFiles"],
+      });
     },
     onError: (e: Error) => {
       throw e;
