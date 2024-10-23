@@ -4,4 +4,5 @@ export const SUB_API_ENDPOINTS = {
   DOCUMENT: "documents",
   USER: "user",
   INSIGHTS: "insights",
+  GOOGLE: "google",
 };

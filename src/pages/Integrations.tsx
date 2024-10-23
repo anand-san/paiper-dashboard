@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, HelpCircle, ChevronRight, Check } from "lucide-react";
+import { Search, HelpCircle, ChevronRight, Check, File } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,20 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/firebase";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DriveFile,
+  useListDriveFiles,
+  useProcessDriveFiles,
+  useSetupGoogleIntegration,
+} from "@/api/useGoogleIntegration";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
+import Loader from "@/components/loader/Loader";
+import { Link } from "react-router-dom";
 
 interface Integration {
   id: number;
@@ -79,10 +93,44 @@ export default function IntegrationSection() {
     useState<Integration | null>(null);
   const [isSetupOpen, setIsSetupOpen] = useState(false);
   const [setupStep, setSetupStep] = useState(1);
-
+  const [isIntegrating, setIsIntegrating] = useState(false);
+  const [driveFiles, setDriveFiles] = useState<DriveFile[]>([]);
   const filteredIntegrations = integrations.filter((integration) =>
     integration.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const [selectedFiles, setSelectedFiles] = useState<DriveFile[]>([]);
+  const [isProcessingFiles, setIsProcessingFiles] = useState(false);
+  const { toast } = useToast();
+  const saveGoogleToken = useSetupGoogleIntegration();
+  const { mutateAsync: listDriveFiles } = useListDriveFiles();
+  const { mutateAsync: processDriveFiles } = useProcessDriveFiles();
+
+  const handleFileSelect = (file: DriveFile) => {
+    setSelectedFiles((prev) =>
+      prev.some((f) => f.id === file.id)
+        ? prev.filter((f) => f.id !== file.id)
+        : [...prev, file]
+    );
+  };
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+
+    provider.addScope("https://www.googleapis.com/auth/drive");
+
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const idTokenResult = await user.getIdTokenResult();
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+
+    const refreshToken = user.refreshToken;
+
+    return {
+      token: credential?.accessToken || "",
+      expiry: idTokenResult.expirationTime,
+      refreshToken,
+    };
+  };
 
   const handleSetup = (integration: Integration) => {
     setActiveIntegration(integration);
@@ -90,7 +138,48 @@ export default function IntegrationSection() {
     setSetupStep(1);
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
+    if (setupStep === 1 && activeIntegration?.name === "Google Drive") {
+      try {
+        setIsIntegrating(true);
+        const signInResult = await handleGoogleSignIn();
+        if (!signInResult.token) {
+          throw new Error("Invalid OAuth token recieved from provider");
+        }
+        await saveGoogleToken.mutate(signInResult);
+        const driveFiles = await listDriveFiles();
+        setDriveFiles(driveFiles);
+        await setSetupStep(setupStep + 1);
+      } catch (error) {
+        console.log(error);
+        toast({
+          description: `Failed to integrate with ${activeIntegration?.name}`,
+          variant: "destructive",
+        });
+      } finally {
+        setIsIntegrating(false);
+      }
+
+      return;
+    }
+    if (setupStep === 2 && activeIntegration?.name === "Google Drive") {
+      try {
+        setIsProcessingFiles(true);
+        const promises = selectedFiles.map((file) =>
+          processDriveFiles({ fileId: file.id })
+        );
+        await Promise.all(promises);
+        toast({ description: "All files processed successfully" });
+      } catch (error) {
+        console.log(error);
+        toast({
+          description: `Failed to process files from ${activeIntegration?.name}`,
+          variant: "destructive",
+        });
+      } finally {
+        setIsProcessingFiles(false);
+      }
+    }
     if (setupStep < 3) {
       setSetupStep(setupStep + 1);
     } else {
@@ -212,23 +301,91 @@ export default function IntegrationSection() {
                 </p>
               )}
               {setupStep === 2 && (
-                <p>
-                  Select the folders you want to sync with your file management
-                  platform.
-                </p>
+                <div>
+                  <p className="mb-4">
+                    Select the files you want to sync with Paiper from your{" "}
+                    {activeIntegration?.name} account. Only PDF and Images are
+                    displayed here and are supported by Paiper.
+                  </p>
+                  {isProcessingFiles ? (
+                    <>
+                      Processing Files
+                      <Loader />
+                    </>
+                  ) : (
+                    <>
+                      <ScrollArea className="h-[200px] border rounded-md p-4">
+                        {driveFiles.map((file) => (
+                          <div
+                            key={file.id}
+                            className="flex items-center space-x-2 py-2"
+                          >
+                            <Checkbox
+                              id={file.id}
+                              checked={selectedFiles.some(
+                                (f) => f.id === file.id
+                              )}
+                              onCheckedChange={() => handleFileSelect(file)}
+                            />
+                            <label
+                              htmlFor={file.id}
+                              className="flex items-center cursor-pointer"
+                            >
+                              <File className="h-4 w-4 mr-2" />
+                              {file.name}
+                            </label>
+                          </div>
+                        ))}
+                      </ScrollArea>
+
+                      <div className="mt-4">
+                        <h4 className="font-semibold mb-2">Selected Files:</h4>
+                        <ScrollArea className="h-[100px] border rounded-md p-2">
+                          {selectedFiles.map((file) => (
+                            <div key={file.id} className="py-1">
+                              <File className="h-4 w-4 inline-block mr-2" />
+                              {file.name}
+                            </div>
+                          ))}
+                        </ScrollArea>
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
               {setupStep === 3 && (
-                <p>Review and confirm your integration settings.</p>
+                <p>
+                  Your files are processed. They should be visible in{" "}
+                  <Link to={"/files"}>"My Files"</Link>
+                </p>
               )}
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsSetupOpen(false)}>
+            {/* <Button variant="outline" onClick={() => setIsSetupOpen(false)}>
               Cancel
-            </Button>
-            <Button onClick={handleNextStep}>
-              {setupStep === 3 ? "Finish" : "Next"}
-              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button> */}
+            <Button onClick={handleNextStep} disabled={isIntegrating}>
+              {isIntegrating ? (
+                <>
+                  Integrating
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                </>
+              ) : isProcessingFiles ? (
+                <>
+                  Processing
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                </>
+              ) : (
+                <>
+                  {setupStep === 1
+                    ? "Connect"
+                    : setupStep === 3
+                    ? "Finish"
+                    : "Start Processing"}
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -73,7 +73,6 @@ export default function Login() {
     setLoading(true);
 
     const provider = new GoogleAuthProvider();
-    provider.addScope("https://www.googleapis.com/auth/drive");
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
