@@ -15,6 +15,7 @@ import MyFiles from "./pages/MyFiles";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Loader from "./components/loader/Loader";
+import IntegrationSection from "./pages/Integrations";
 
 const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
@@ -45,6 +46,7 @@ const App: React.FC = () => {
           <Route path="files" element={<MyFiles />} />
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="integrations" element={<IntegrationSection />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

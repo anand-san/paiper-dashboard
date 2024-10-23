@@ -73,8 +73,14 @@ export default function Login() {
     setLoading(true);
 
     const provider = new GoogleAuthProvider();
+    provider.addScope("https://www.googleapis.com/auth/drive");
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      //TODO: Store this on backend
+      console.log(user.uid, token);
       handleSuccessfulAuth();
     } catch (error) {
       handleAuthError(error as AuthError);

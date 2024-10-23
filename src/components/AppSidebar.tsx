@@ -1,4 +1,5 @@
 import {
+  Cable,
   ChevronUp,
   Home,
   Inbox,
@@ -47,6 +48,11 @@ const items = [
     title: "Settings",
     url: "settings",
     icon: Settings,
+  },
+  {
+    title: "Integrations",
+    url: "integrations",
+    icon: Cable,
   },
 ];
 
