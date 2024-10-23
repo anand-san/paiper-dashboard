@@ -41,11 +41,11 @@ export default function Layout() {
                   </BreadcrumbItem>
                 </>
               )}
-              {currentRoute === "/settings" && (
+              {currentRoute === "/integrations" && (
                 <>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <Link to="/settings">Settings</Link>
+                    <Link to="/integrations">Integrations</Link>
                   </BreadcrumbItem>
                 </>
               )}

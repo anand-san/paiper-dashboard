@@ -3,7 +3,6 @@ import {
   ChevronUp,
   Home,
   Inbox,
-  Settings,
   UploadCloud,
   User2,
 } from "lucide-react";
@@ -43,11 +42,6 @@ const items = [
     title: "My Files",
     url: "files",
     icon: Inbox,
-  },
-  {
-    title: "Settings",
-    url: "settings",
-    icon: Settings,
   },
   {
     title: "Integrations",

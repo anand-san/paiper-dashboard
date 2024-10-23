@@ -13,7 +13,6 @@ import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
 import MyFiles from "./pages/MyFiles";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
 import Loader from "./components/loader/Loader";
 import IntegrationSection from "./pages/Integrations";
 
@@ -45,7 +44,6 @@ const App: React.FC = () => {
           <Route index element={<Dashboard />} />
           <Route path="files" element={<MyFiles />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="settings" element={<Settings />} />
           <Route path="integrations" element={<IntegrationSection />} />
         </Route>
         <Route path="/login" element={<Login />} />
