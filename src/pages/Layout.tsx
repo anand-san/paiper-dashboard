@@ -13,7 +13,7 @@ export default function Layout() {
   const currentRoute = location.pathname;
 
   return (
-    <main className="min-h-screen w-full flex container">
+    <main className="min-h-screen w-full">
       <SidebarProvider>
         <AppSidebar />
         <main className="w-full h-full m-2 md:m-2">
@@ -51,7 +51,7 @@ export default function Layout() {
               )}
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="w-full h-full m-2 md:m-2">
+          <div className="w-full h-full">
             <Outlet />
           </div>
         </main>
