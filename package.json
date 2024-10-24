@@ -40,7 +40,6 @@
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.9",
     "react-router-dom": "^6.27.0",
-    "recharts": "^2.13.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.0"

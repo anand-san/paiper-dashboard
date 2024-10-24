@@ -1,18 +1,10 @@
-import {
-  Cable,
-  ChevronUp,
-  Home,
-  Inbox,
-  UploadCloud,
-  User2,
-} from "lucide-react";
+import { Cable, ChevronUp, Home, Inbox, User2 } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,

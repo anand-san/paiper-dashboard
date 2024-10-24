@@ -6,12 +6,13 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+
 import { useAuth } from "./hooks/useAuth";
-import Layout from "./pages/Layout";
 import Loader from "./components/loader/Loader";
 
+const Login = React.lazy(() => import("./pages/Login"));
+const Signup = React.lazy(() => import("./pages/Signup"));
+const Layout = React.lazy(() => import("./pages/Layout"));
 const FileManager = React.lazy(() => import("./pages/my-files/FileManager"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Profile = React.lazy(() => import("./pages/Profile"));
