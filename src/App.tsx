@@ -14,7 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import MyFiles from "./pages/MyFiles";
 import Profile from "./pages/Profile";
 import Loader from "./components/loader/Loader";
-import IntegrationSection from "./pages/Integrations";
+import IntegrationSection from "./pages/integrations/Integrations";
 
 const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
