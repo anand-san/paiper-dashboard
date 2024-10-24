@@ -16,6 +16,7 @@ import {
   useListInstalledIntegrations,
 } from "@/api/useIntegrations";
 import Loader from "@/components/loader/Loader";
+import { cn } from "@/lib/utils";
 
 export default function IntegrationSection() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +49,7 @@ export default function IntegrationSection() {
   };
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="py-8">
       <h1 className="text-3xl font-bold mb-6">Integrations</h1>
       <div className="mb-6">
         <div className="relative max-w-md">
@@ -66,7 +67,10 @@ export default function IntegrationSection() {
         {filteredIntegrations?.map((integration) => (
           <div
             key={integration.id}
-            className="bg-card text-card-foreground rounded-lg shadow-md p-6 flex flex-col flex-grow justify-between"
+            className={cn(
+              "bg-card text-card-foreground rounded-lg shadow-md p-6 flex flex-col justify-between",
+              integration.disabled && "opacity-50 pointer-events-none"
+            )}
           >
             <div>
               <div className="flex items-center justify-between mb-4">
