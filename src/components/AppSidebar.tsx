@@ -57,10 +57,10 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Paiper App</SidebarGroupLabel>
-          <SidebarGroupAction title="Add File" onClick={console.log}>
-            <UploadCloud /> <span className="sr-only">Add File</span>
-          </SidebarGroupAction>
+          <div className="flex justify-between">
+            <SidebarGroupLabel>Paiper App</SidebarGroupLabel>
+            <ThemeToggle />
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -74,7 +74,6 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
-            <ThemeToggle />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
