@@ -114,8 +114,11 @@ export default function IntegrationSection() {
               {installedIntegrations?.message.includes(integration.slug) ? (
                 <>
                   <div className="flex space-x-2">
-                    <Button variant="outline" onClick={console.log}>
-                      Manage
+                    <Button
+                      variant="outline"
+                      onClick={() => handleSetup(integration)}
+                    >
+                      Re-Sync
                     </Button>
                     <Button
                       variant="destructive"
