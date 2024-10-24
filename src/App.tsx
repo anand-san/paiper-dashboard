@@ -15,6 +15,7 @@ import MyFiles from "./pages/MyFiles";
 import Profile from "./pages/Profile";
 import Loader from "./components/loader/Loader";
 import IntegrationSection from "./pages/integrations/Integrations";
+import FileManager from "./pages/FileManager";
 
 const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
@@ -43,6 +44,7 @@ const App: React.FC = () => {
         <Route path="/" element={<ProtectedRoute />}>
           <Route index element={<Dashboard />} />
           <Route path="files" element={<MyFiles />} />
+          <Route path="file-manager" element={<FileManager />} />
           <Route path="profile" element={<Profile />} />
           <Route path="integrations" element={<IntegrationSection />} />
         </Route>

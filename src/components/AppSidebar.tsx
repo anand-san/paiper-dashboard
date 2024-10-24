@@ -1,6 +1,7 @@
 import {
   Cable,
   ChevronUp,
+  File,
   Home,
   Inbox,
   UploadCloud,
@@ -42,6 +43,11 @@ const items = [
     title: "My Files",
     url: "files",
     icon: Inbox,
+  },
+  {
+    title: "File Manager",
+    url: "file-manager",
+    icon: File,
   },
   {
     title: "Integrations",
