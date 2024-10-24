@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { API_ENDPOINT, SUB_API_ENDPOINTS } from "./constants";
+import { API_ENDPOINT, APP_ROUTES } from "./constants";
 
 interface InsightResponse {
   message: string;
@@ -26,7 +26,7 @@ export const useCreateInsight = (documentId: string) => {
 
       try {
         const response = await fetch(
-          `${API_ENDPOINT}/${SUB_API_ENDPOINTS.INSIGHTS}?documentId=${documentId}`,
+          `${API_ENDPOINT}/${APP_ROUTES.INSIGHTS}?documentId=${documentId}`,
           {
             method: "POST",
             headers: {
@@ -77,7 +77,7 @@ export const useGetInsights = (documentId: string) => {
       }
 
       const response = await fetch(
-        `${API_ENDPOINT}/${SUB_API_ENDPOINTS.INSIGHTS}?documentId=${documentId}`,
+        `${API_ENDPOINT}/${APP_ROUTES.INSIGHTS}?documentId=${documentId}`,
         {
           method: "GET",
           headers: {

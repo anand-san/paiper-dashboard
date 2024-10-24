@@ -1,6 +1,11 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { API_ENDPOINT, SUB_API_ENDPOINTS } from "./constants";
+import {
+  API_ENDPOINT,
+  APP_ROUTES,
+  GOOGLE_INTEGRATION_ROUTES,
+  INTEGRATIONS_ROUTES,
+} from "./constants";
 
 interface DriveSetupResponse {
   message: string;
@@ -39,7 +44,7 @@ export const useSetupGoogleIntegration = () => {
 
       try {
         const response = await fetch(
-          `${API_ENDPOINT}/${SUB_API_ENDPOINTS.GOOGLE}/setup`,
+          `${API_ENDPOINT}/${APP_ROUTES.INTEGRATIONS}/${INTEGRATIONS_ROUTES.GOOGLE}/${GOOGLE_INTEGRATION_ROUTES.SETUP}`,
           {
             method: "POST",
             headers: {
@@ -64,7 +69,9 @@ export const useSetupGoogleIntegration = () => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userGoogleCreds"] });
+      queryClient.invalidateQueries({
+        queryKey: ["listInstalledIntegrations"],
+      });
     },
     onError: (e: Error) => {
       throw e;
@@ -89,7 +96,7 @@ export const useListDriveFiles = () => {
 
       try {
         const response = await fetch(
-          `${API_ENDPOINT}/${SUB_API_ENDPOINTS.GOOGLE}/listDriveFiles`,
+          `${API_ENDPOINT}/${APP_ROUTES.INTEGRATIONS}/${INTEGRATIONS_ROUTES.GOOGLE}/${GOOGLE_INTEGRATION_ROUTES.LIST_DRIVE_FILES}`,
           {
             method: "GET",
             headers: {
@@ -135,7 +142,7 @@ export const useProcessDriveFiles = () => {
 
       try {
         const response = await fetch(
-          `${API_ENDPOINT}/${SUB_API_ENDPOINTS.GOOGLE}/processDriveFile?fileId=${fileId}`,
+          `${API_ENDPOINT}/${APP_ROUTES.INTEGRATIONS}/${INTEGRATIONS_ROUTES.GOOGLE}/${GOOGLE_INTEGRATION_ROUTES.PROCESS_DRIVE_FILE}/${fileId}`,
           {
             method: "GET",
             headers: {

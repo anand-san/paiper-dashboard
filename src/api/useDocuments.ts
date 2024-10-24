@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { API_ENDPOINT, SUB_API_ENDPOINTS } from "./constants";
+import { API_ENDPOINT, APP_ROUTES } from "./constants";
 
 interface DocumentData {
   category: string;
@@ -42,16 +42,13 @@ export const useCreateDocument = () => {
       formData.append("file", file[0]);
 
       try {
-        const response = await fetch(
-          `${API_ENDPOINT}/${SUB_API_ENDPOINTS.DOCUMENT}`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          }
-        );
+        const response = await fetch(`${API_ENDPOINT}/${APP_ROUTES.DOCUMENT}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
 
         if (!response.ok) {
           throw new Error("Failed to upload file");
@@ -94,15 +91,12 @@ export const useGetDocuments = () => {
         throw new Error("No authentication token available");
       }
 
-      const response = await fetch(
-        `${API_ENDPOINT}/${SUB_API_ENDPOINTS.DOCUMENT}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_ENDPOINT}/${APP_ROUTES.DOCUMENT}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch documents");

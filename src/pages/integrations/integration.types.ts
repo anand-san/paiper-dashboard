@@ -1,7 +1,7 @@
 export interface Integration {
   id: number;
+  slug: string;
   name: string;
-  connected: boolean;
   logo: string;
   disabled: boolean;
 }

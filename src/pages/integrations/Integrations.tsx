@@ -11,53 +11,11 @@ import {
 } from "@/components/ui/tooltip";
 import { Integration } from "./integration.types";
 import SetupDialog from "./components/setup-dialog/setup-dialog";
-
-const integrations: Integration[] = [
-  {
-    id: 1,
-    name: "Google Drive",
-    logo: "/integrations/gdrive.svg?height=40&width=40",
-    connected: false,
-    disabled: false,
-  },
-  {
-    id: 2,
-    name: "iCloud",
-    logo: "/integrations/icloud.svg?height=40&width=40",
-    connected: false,
-    disabled: true,
-  },
-  {
-    id: 3,
-    name: "Dropbox",
-    logo: "/integrations/dropbox.svg?height=40&width=40",
-    connected: false,
-    disabled: true,
-  },
-
-  {
-    id: 4,
-    name: "OneDrive",
-    logo: "/integrations/onedrive.svg?height=40&width=40",
-    connected: false,
-    disabled: true,
-  },
-  {
-    id: 5,
-    name: "Box",
-    logo: "/integrations/box.svg?height=40&width=40",
-    connected: false,
-    disabled: true,
-  },
-
-  //   {
-  //     id: 6,
-  //     name: "Amazon S3",
-  //     logo: "/integrations/aws.svg?height=40&width=40",
-  //     connected: true,
-  //     disabled: true,
-  //   },
-];
+import {
+  useListAllIntegrations,
+  useListInstalledIntegrations,
+} from "@/api/useIntegrations";
+import Loader from "@/components/loader/Loader";
 
 export default function IntegrationSection() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,17 +23,32 @@ export default function IntegrationSection() {
     useState<Integration | null>(null);
   const [isSetupDialogOpen, setIsSetupDialogOpen] = useState(false);
 
+  const { data: allIntegrations, isLoading: allIntegrationsLoading } =
+    useListAllIntegrations();
+  const {
+    data: installedIntegrations,
+    isLoading: installedIntegrationsLoading,
+  } = useListInstalledIntegrations();
+
+  const allIntegrationsArray = allIntegrations?.message;
+
+  if (allIntegrationsLoading || installedIntegrationsLoading) {
+    return <Loader />;
+  }
+
+  const filteredIntegrations = allIntegrationsArray?.filter((integration) =>
+    integration.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  console.log({ allIntegrations, installedIntegrations });
+
   const handleSetup = (integration: Integration) => {
     setActiveIntegration(integration);
     setIsSetupDialogOpen(true);
   };
 
-  const filteredIntegrations = integrations.filter((integration) =>
-    integration.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">Integrations</h1>
       <div className="mb-6">
         <div className="relative max-w-md">
@@ -90,10 +63,10 @@ export default function IntegrationSection() {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredIntegrations.map((integration) => (
+        {filteredIntegrations?.map((integration) => (
           <div
             key={integration.id}
-            className="bg-card text-card-foreground rounded-lg shadow-md p-6 flex flex-col justify-between"
+            className="bg-card text-card-foreground rounded-lg shadow-md p-6 flex flex-col flex-grow justify-between"
           >
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -102,7 +75,7 @@ export default function IntegrationSection() {
                   alt={`${integration.name} logo`}
                   className="w-10 h-10"
                 />
-                {integration.connected && (
+                {installedIntegrations?.message.includes(integration.slug) && (
                   <Badge variant="secondary" className="ml-2">
                     Connected
                   </Badge>
@@ -122,11 +95,17 @@ export default function IntegrationSection() {
             </div>
             <div className="flex justify-between items-center">
               <Button
-                variant={integration.connected ? "outline" : "default"}
+                variant={
+                  installedIntegrations?.message.includes(integration.slug)
+                    ? "outline"
+                    : "default"
+                }
                 onClick={() => handleSetup(integration)}
                 disabled={integration.disabled}
               >
-                {integration.connected ? "Manage" : "Connect"}
+                {installedIntegrations?.message.includes(integration.slug)
+                  ? "Manage"
+                  : "Connect"}
               </Button>
               <TooltipProvider>
                 <Tooltip>

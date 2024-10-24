@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import { API_ENDPOINT, SUB_API_ENDPOINTS } from "./constants";
+import { API_ENDPOINT, APP_ROUTES } from "./constants";
 
 interface UserResponse {
   message: string;
@@ -19,15 +19,12 @@ export const useGetUsers = () => {
         throw new Error("No authentication token available");
       }
 
-      const response = await fetch(
-        `${API_ENDPOINT}/${SUB_API_ENDPOINTS.USER}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_ENDPOINT}/${APP_ROUTES.USER}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch users");
