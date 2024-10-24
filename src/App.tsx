@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -10,12 +10,14 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useAuth } from "./hooks/useAuth";
 import Layout from "./pages/Layout";
-import Dashboard from "./pages/Dashboard";
-import MyFiles from "./pages/MyFiles";
-import Profile from "./pages/Profile";
 import Loader from "./components/loader/Loader";
-import IntegrationSection from "./pages/integrations/Integrations";
-import FileManager from "./pages/FileManager";
+
+const FileManager = React.lazy(() => import("./pages/my-files/FileManager"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const Profile = React.lazy(() => import("./pages/Profile"));
+const IntegrationSection = lazy(
+  () => import("./pages/integrations/Integrations")
+);
 
 const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
@@ -39,20 +41,21 @@ const ProtectedRoute: React.FC = () => {
 };
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<ProtectedRoute />}>
-          <Route index element={<Dashboard />} />
-          <Route path="files" element={<MyFiles />} />
-          <Route path="file-manager" element={<FileManager />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="integrations" element={<IntegrationSection />} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="*" element={<Navigate to={"/"} />} />
-      </Routes>
-    </Router>
+    <Suspense fallback={<Loader />}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route index element={<Dashboard />} />
+            <Route path="files" element={<FileManager />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="integrations" element={<IntegrationSection />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="*" element={<Navigate to={"/"} />} />
+        </Routes>
+      </Router>
+    </Suspense>
   );
 };
 
