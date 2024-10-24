@@ -49,7 +49,7 @@ export default function IntegrationSection() {
   };
 
   return (
-    <div className="py-8">
+    <div>
       <h1 className="text-3xl font-bold mb-6">Integrations</h1>
       <div className="mb-6">
         <div className="relative max-w-md">

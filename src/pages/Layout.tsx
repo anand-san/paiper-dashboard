@@ -51,7 +51,7 @@ export default function Layout() {
               )}
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="w-full h-full">
+          <div className="w-full h-full py-8">
             <Outlet />
           </div>
         </main>
