@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, HelpCircle } from "lucide-react";
+import { Search, HelpCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,12 +17,23 @@ import {
 } from "@/api/useIntegrations";
 import Loader from "@/components/loader/Loader";
 import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function IntegrationSection() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeIntegration, setActiveIntegration] =
     useState<Integration | null>(null);
   const [isSetupDialogOpen, setIsSetupDialogOpen] = useState(false);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
   const { data: allIntegrations, isLoading: allIntegrationsLoading } =
     useListAllIntegrations();
@@ -41,11 +52,13 @@ export default function IntegrationSection() {
     integration.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log({ allIntegrations, installedIntegrations });
-
   const handleSetup = (integration: Integration) => {
     setActiveIntegration(integration);
     setIsSetupDialogOpen(true);
+  };
+
+  const handleRemoveIntegration = () => {
+    setIsRemoveDialogOpen(false);
   };
 
   return (
@@ -98,19 +111,33 @@ export default function IntegrationSection() {
               </p>
             </div>
             <div className="flex justify-between items-center">
-              <Button
-                variant={
-                  installedIntegrations?.message.includes(integration.slug)
-                    ? "outline"
-                    : "default"
-                }
-                onClick={() => handleSetup(integration)}
-                disabled={integration.disabled}
-              >
-                {installedIntegrations?.message.includes(integration.slug)
-                  ? "Manage"
-                  : "Connect"}
-              </Button>
+              {installedIntegrations?.message.includes(integration.slug) ? (
+                <>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" onClick={console.log}>
+                      Manage
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => {
+                        setActiveIntegration(integration);
+                        setIsRemoveDialogOpen(true);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <Button
+                  variant={"default"}
+                  onClick={() => handleSetup(integration)}
+                  disabled={integration.disabled}
+                >
+                  Connect
+                </Button>
+              )}
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -133,6 +160,28 @@ export default function IntegrationSection() {
           isSetupOpen={isSetupDialogOpen}
           setIsSetupOpen={setIsSetupDialogOpen}
         />
+      )}
+      {isRemoveDialogOpen && activeIntegration && (
+        <AlertDialog
+          open={isRemoveDialogOpen}
+          onOpenChange={setIsRemoveDialogOpen}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove Integration</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to remove the {activeIntegration?.name}{" "}
+                integration? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleRemoveIntegration}>
+                Remove
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );
